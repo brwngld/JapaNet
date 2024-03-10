@@ -1,0 +1,6 @@
+/* Define styles for large screens */
+@media (min-width: 1200px) {
+    .col-md-4 {
+      width: 25%; /* Adjust the width of grid items for large screens */
+    }
+  }

@@ -1,0 +1,28 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+<body class="bg-light">
+    <div class="container">
+        {% include 'admin/_messages.html' %}
+        <div class="row mt-5">
+            <div class="col-lg-4 bg-white m-auto rounded-top wrapper">
+                <h2 class="text-center pt-3">Add Brand</h2>
+    
+                <form action="{{ url_for('add_brand') }}" method="POST" id="add-brand-form" enctype="multipart/form-data">
+                    <div class="input-group mb-3">
+                        <label for="name" class="input-group-text"><i class="fa fa-store"></i></label>
+                        <input id="brand" name="name" type="text" class="form-control" placeholder="Enter Brand Name" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Add Brand</button>
+                        <a href="{{ url_for('brands') }}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+{% endblock content %}
