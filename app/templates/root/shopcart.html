@@ -1,0 +1,52 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+
+{% include 'root/navbar.html' %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Shopping Cart</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Loop through cart items -->
+          {% for item in cart %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ item.product.name }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.product.price * item.quantity }}</td>
+            <td>
+              <button class="btn btn-sm btn-danger">Remove</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Cart Summary</h5>
+          <p class="card-text">Total Items: {{ total_items }}</p>
+          <p class="card-text">Total Price: ${{ total_price }}</p>
+          <a href="#" class="btn btn-primary">Checkout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

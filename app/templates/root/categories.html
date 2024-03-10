@@ -6,7 +6,7 @@
 
 <div class="container mt-4">
   <div class="row">
-    {% for cat in category %}
+    {% for cat in category.items %}
     <div class="col-md-4 mb-4">
       <div class="card h-100 d-flex flex-column">
         <img src="{{url_for('static', filename='img/' + cat.image_1)}}" alt="{{cat.name}}" class="card-img-top">
@@ -17,12 +17,12 @@
           {% if cat.discount > 0 %}
           <p class="text-center">Original Price: <del>${{ unit_price | round(2) }}</del></p>
           <p class="text-center">Discounted Price: ${{ discounted_price | round(2) }}</p>
-          <p class="text-center">Save: ${{ unit_price - discounted_price | round(2) }}</p>
+          <p class="text-center">Save: ${{ (unit_price - discounted_price) | round(2) }}</p>
           {% else %}
           <p class="text-center">Price: ${{ unit_price | round(2) }}</p>
           {% endif %}
           <div class="mt-auto d-flex justify-content-between">
-            <a href="#" class="btn btn-sm btn-primary">Details</a>
+            <a href="{{url_for('detail_page', id=cat.id)}}" class="btn btn-sm btn-primary">Details</a>
             {% if cat.stock > 0 %}
               <div class="mx-2"></div> <!-- Add empty div for spacing -->
               <a href="#" class="btn btn-sm btn-warning">Add to Cart</a>
@@ -44,5 +44,28 @@
     {% endfor %}
   </div>
 </div>
+
+<div class="row">
+  <div class="col text-center">
+    {% if category.has_prev %}
+    <a href="{{ url_for('get_cat', id=get_categ.id, page=category.prev_num)}}" class="btn btn-outline-info btn-sm mt-3">Previous</a>
+    {% endif %}
+    {% for page_num in category.iter_pages(left_edge= 1, right_edge=2, left_current = 1, right_current=2) %}
+    {% if page_num %}
+    {% if category.page == page_num %}
+    <a href="{{ url_for('get_cat', id=get_categ.id, page=page_num) }}" class="btn btn-info btn-sm mt-3">{{ page_num }}</a>
+    {% else %}
+    <a href="{{ url_for('get_cat', id=get_categ.id, page=page_num)}}" class="btn btn-outline-info btn-sm mt-3">{{page_num}}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}    
+    {% endfor %}
+    {% if category.has_next %}
+    <a href="{{ url_for('get_cat', id=get_categ.id, page=category.next_num)}}" class="btn btn-outline-info btn-sm mt-3">Next</a>
+    {% endif %}
+  </div>
+</div>
+
 
 {% endblock content %}

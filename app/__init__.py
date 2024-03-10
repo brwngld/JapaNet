@@ -1,5 +1,4 @@
-import logging
-from flask import Flask
+from flask import Flask, session
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -8,6 +7,8 @@ from flask_login import LoginManager
 import os
 from flask_migrate import Migrate
 from flask_uploads import IMAGES, UploadSet, configure_uploads
+from decimal import Decimal  # Importing Decimal from the decimal module
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -16,8 +17,6 @@ load_dotenv()
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Configure logging
-logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Obtain the base directory path of the application
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -62,3 +61,14 @@ def load_user(user_id):
 from app.routes.admin import *
 from app.models.admin import *
 from app.routes.root import *
+
+
+# Example of using session
+@app.route('/set-session')
+def set_session():
+    session['key'] = 'value'
+    return 'Session set'
+
+@app.route('/get-session')
+def get_session():
+    return session.get('key', 'Session key not found')

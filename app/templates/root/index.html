@@ -6,7 +6,7 @@
 
 <div class="container mt-4">
   <div class="row">
-    {% for product in products %}
+    {% for product in products.items %}
     <div class="col-md-4 mb-4">
       <div class="card h-100 d-flex flex-column">
         <img src="{{url_for('static', filename='img/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top">
@@ -23,7 +23,7 @@
           <p class="text-center">Price: ${{ unit_price | round(2) }}</p>
           {% endif %}
           <div class="mt-auto d-flex justify-content-between">
-            <a href="#" class="btn btn-sm btn-primary">Details</a>
+            <a href="{{url_for('detail_page', id=product.id)}}" class="btn btn-sm btn-primary">Details</a>
             {% if product.stock > 0 %}
               <div class="mx-2"></div> <!-- Add empty div for spacing -->
               <a href="#" class="btn btn-sm btn-warning">Add to Cart</a>
@@ -43,6 +43,28 @@
       {% endif %}
     {% endif %}
     {% endfor %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col text-center">
+    {% if products.has_prev %}
+    <a href="{{ url_for('home', page=products.prev_num)}}" class="btn btn-outline-info btn-sm mt-3">Previous</a>
+    {% endif %}
+    {% for page_num in products.iter_pages(left_edge= 1, right_edge=2, left_current = 1, right_current=2) %}
+    {% if page_num %}
+    {% if products.page == page_num %}
+    <a href="{{ url_for('home', page=page_num)}}" class="btn btn-info btn-sm mt-3">{{page_num}}</a>
+    {% else %}
+    <a href="{{ url_for('home', page=page_num)}}" class="btn btn-outline-info btn-sm mt-3">{{page_num}}</a>
+    {% endif %}
+    {% else %}
+    ...
+    {% endif %}    
+    {% endfor %}
+    {% if products.has_next %}
+    <a href="{{ url_for('home', page=products.next_num)}}" class="btn btn-outline-info btn-sm mt-3">Next</a>
+    {% endif %}
   </div>
 </div>
 

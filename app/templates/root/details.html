@@ -1,0 +1,79 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+
+{% include 'root/navbar.html' %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6" id="b_image">
+      <img src="{{url_for('static', filename='img/' + product.image_1)}}" alt="" width="400" height="400" class="img-fluid">
+    </div>
+    <div class="col-md-6">
+      <h4>Product name: {{product.name}}</h4>
+      <hr>
+      <p style="display: none;">Price: ${{product.price}}</p>
+      {% set unit_price = product.price | float %}
+      {% set discounted_price = unit_price * (1 - product.discount / 100) %}
+      {% set save_price = unit_price - discounted_price %}
+      {% if product.discount > 0 %}
+      <p class="text-center">Original Price: <del>${{ unit_price | round(2) }}</del></p>
+      <p class="text-center">Discounted Price: ${{ discounted_price | round(2) }}</p>
+      <p class="text-center">Save: ${{ save_price | round(2) }}</p>
+      {% else %}
+      <p class="text-center">Price: ${{ unit_price | round(2) }}</p>
+      {% endif %}
+      <hr>
+      <b>Product Description</b>
+      <p>{{product.description}}</p>
+      {% if product.stock > 0 %}
+      <div class="mx-2"></div> <!-- Add empty div for spacing -->
+      
+      <form action="{{url_for('AddCart')}}" method="post">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+        <label for="quantity">Quantity</label>
+        <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}">
+        {% set colors = product.colors.split(',') %}
+        <label for="colors">Colors:</label>
+        <select name="colors" id="">
+          {% for color in colors %}
+          {% set col = color.split(':') %}
+          <option value="{{ col[0] }}">{{ col[0]|capitalize }}</option>
+          {% endfor %}
+        </select>       
+    </form>
+    
+      <a href="javascript:history.go(-1)" class="btn btn-sm btn-primary">Back</a>
+      {% else %}
+      <button class="btn btn-sm btn-danger" disabled>Out of Stock</button>
+      <a href="javascript:history.go(-1)" class="btn btn-sm btn-primary">Back</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-12" id="s_image">
+      <img src="{{url_for('static', filename='img/' + product.image_1)}}" alt="{{product.name}}" style="max-width: 80px; max-height: 80px;" class="thumbnail">
+      <img src="{{url_for('static', filename='img/' + product.image_2)}}" alt="{{product.name}}" style="max-width: 80px; max-height: 80px;" class="thumbnail">
+      <img src="{{url_for('static', filename='img/' + product.image_3)}}" alt="{{product.name}}" style="max-width: 80px; max-height: 80px;" class="thumbnail">
+    </div>
+  </div>
+</div>
+
+
+<!--Javascript that enables the image to change after clicking on it-->
+<script>
+  var brnd_image = document.getElementById('b_image');
+  var s_image = document.getElementById('s_image').getElementsByTagName('img');
+  
+  for (var i = 0; i < s_image.length; i++) {
+      s_image[i].addEventListener('click', full_image);
+  }
+
+  function full_image() {
+      var ImageSRC = this.getAttribute('src');
+      brnd_image.innerHTML = "<img src='" + ImageSRC + "' width='400' height='400'>";
+  }
+</script>
+
+{% endblock content %}
