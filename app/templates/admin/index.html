@@ -33,7 +33,7 @@
                     <td class="text-center">{{ product.discount }}</td>
                     <td class="text-center">{{ product.stock }}</td>
                     <td>{{ product.brand.name }}</td>
-                    <td><img src="{{ url_for('static', filename='img/' + product.image_1) if product.image_1 else '' }}" alt="" style="max-width: 50px; max-height: 50px;"></td>
+                    <td><img src="{{ url_for('static', filename='img/' + product.image_1) if product.image_1 else '' }}" alt="{{product.name}}" style="max-width: 50px; max-height: 50px;"></td>
                     <td><a href="{{ url_for('updateproduct', id=product.id) }}" class="btn btn-sm btn-outline-info">Edit</a></td>
                     <td>
                         <!-- Triggers a Delete Pop Up Alert -->

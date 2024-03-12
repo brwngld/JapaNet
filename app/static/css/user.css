@@ -1,6 +1,27 @@
+/* Apply Montserrat font to the entire page */
+body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400; /* Adjust the weight as needed */
+  font-style: normal;
+  background-color: #f0f0f0;
+}
+
+
+
 /* Define styles for large screens */
 @media (min-width: 1200px) {
     .col-md-4 {
       width: 25%; /* Adjust the width of grid items for large screens */
     }
   }
+
+
+  .container {
+    width: 90%; /* Or width: 90vw; */
+    margin: 0 auto; /* Centering the container */
+}
+
+.clear-cart-container {
+  margin-top: 20px; /* Adjust the top margin as needed */
+}

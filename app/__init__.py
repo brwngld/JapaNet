@@ -7,7 +7,7 @@ from flask_login import LoginManager
 import os
 from flask_migrate import Migrate
 from flask_uploads import IMAGES, UploadSet, configure_uploads
-from decimal import Decimal  # Importing Decimal from the decimal module
+
 
 
 # Load environment variables from .env file

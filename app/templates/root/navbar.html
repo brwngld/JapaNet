@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
   <div class="container">
-      <a class="navbar-brand" href="/">Japanet</a>
+      <a class="navbar-brand" href="/">JapaNet</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
       </button>
@@ -29,7 +29,7 @@
                 </ul>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" aria-disabled="true" href="#" tabindex="-1">
+                <a class="nav-link" aria-disabled="true" href="{{url_for('getCart')}}" tabindex="-1">
                     <i class="fas fa-shopping-cart"></i> Cart ({{ session['Shoppingcart']|length }})
                 </a>
             </li>
