@@ -7,6 +7,7 @@ from flask_login import LoginManager
 import os
 from flask_migrate import Migrate
 from flask_uploads import IMAGES, UploadSet, configure_uploads
+from flask_msearch import Search
 
 
 
@@ -37,30 +38,31 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 # Initialize Flask extensions
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-login = LoginManager(app)
-login.login_view = 'admin_login'  # Set the login view for Flask-Login
-migrate = Migrate(app, db)
-
+db = SQLAlchemy(app) #Databse
+bcrypt = Bcrypt(app) #Bcrypt for password hashing
+migrate = Migrate(app, db) #Migrate database to match current database
+#search tool configuration
+search = Search(db=db)
+search.init_app(app)
+#login Manager for Users
+login_manager = LoginManager(app)
+login_manager.init_app(app)
+login_manager.login_view = 'user_login'
+login_manager.needs_refresh_message_category = 'danger'
+login_manager.login_message = u"Please login first"
 
 # Define the user loader function for Flask-Login
-@login.user_loader
-def load_user(user_id):
-    from app.models.admin import Admin
+@login_manager.user_loader
+def user_loader(user_id):
     from app.models.user import User
+    return User.query.get(user_id)
 
-    # Check if the user ID corresponds to an admin or a regular user
-    admin = Admin.query.get(int(user_id))
-    if admin:
-        return admin
-    else:
-        return User.query.get(int(user_id))
 
 # Import other parts of the application
 from app.routes.admin import *
 from app.models.admin import *
 from app.routes.root import *
+from app.models.user import *
 
 
 # Example of using session

@@ -1,10 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
-from app import app, db
-from app.models.user import User
+from app import app, db, search
 from app.models.products import Addproduct, Brand, Category
-from flask_login import login_required
 
-from flask_login import login_user
 
 
 def brands():
@@ -15,6 +12,7 @@ def brands():
 def categories():
     categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
     return categories
+
 
 @app.route('/brand/<int:id>')
 def get_brand(id):
@@ -47,7 +45,7 @@ def home():
     page = request.args.get('page', 1, type=int)
     products = Addproduct.query.filter(Addproduct.stock >= 0).order_by(
         Addproduct.id.desc()).paginate(page=page, per_page=6)        
-    return render_template('root/index.html', products=products, brands=brands(), categories=categories())
+    return render_template('root/index.html', products = products, brands = brands(), categories = categories())
 
 
 
@@ -65,3 +63,38 @@ def detail_page(id):
         button_text = "Add to Cart"
         
     return render_template('root/details.html', product=product, button_text=button_text, brands=brands(), categories=categories() )
+
+
+#---------------------------------------------------------------------
+
+#SEARCH ALGORITHM
+
+@app.route('/result')
+def result():
+    searchword = request.args.get('query')
+    page = request.args.get('page', 1, type=int)
+    per_page = 3  # Adjust as needed
+    
+    # Query the database for products matching the search query
+    if searchword:
+        pagination = Addproduct.query.filter(
+            (Addproduct.name.ilike(f'%{searchword}%')) |
+            (Addproduct.description.ilike(f'%{searchword}%')) |
+            (Addproduct.price == searchword) |
+            (Addproduct.brand.has(name=searchword)) |
+            (Addproduct.category.has(name=searchword))
+        ).paginate(page=page, per_page=per_page)
+    else:
+        # If no search query provided, return all products
+        pagination = Addproduct.query.paginate(page=page, per_page=per_page)
+    
+    # Check if products1 is empty
+    if not pagination.items:  # If no products found
+        return redirect(url_for('not_found'))  # Redirect to the not found page
+
+    return render_template('root/result.html', pagination=pagination, brands=brands(), categories=categories())
+
+
+@app.route('/not_found')
+def not_found():
+    return render_template('root/404.html', title='Not Found')

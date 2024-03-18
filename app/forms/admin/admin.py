@@ -7,14 +7,17 @@ class RegistrationForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     company_name = StringField('Company Name', validators=[DataRequired(), Length(min=2, max=100)])
     nature_of_business = StringField('Nature of Business', validators=[DataRequired(), Length(min=2, max=100)])
-    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])  # Minimum length of 6 characters
+    confirm_password = PasswordField('Confirm Password', validators=[
+        DataRequired(),
+        EqualTo('password', message='Passwords must match')
+    ])
     submit = SubmitField('Sign Up')
 
 
+
 class LoginForm(FlaskForm):
-    email = StringField('Email', [validators.Length(min=4, max=35)])
-    password = PasswordField('Password', [validators.DataRequired()])
-    
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')

@@ -1,0 +1,16 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+
+{% include 'root/navbar.html' %}
+
+
+<div class="container" style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+    <div style="padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #fff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h1 style="margin-top: 0; color: #333;">404 Not Found</h1>
+        <p style="color: #666;">Sorry, the page you are looking for does not exist.</p>
+        <p><a href="/" style="color: #007bff; text-decoration: none;">Go back to the home page</a></p>
+    </div>
+</div>
+
+{% endblock content %}

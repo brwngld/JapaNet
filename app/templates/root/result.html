@@ -1,0 +1,81 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+
+{% include 'root/navbar.html' %}
+
+<div class="container mt-4">
+  <div class="row">
+    {% for product in pagination.items %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 d-flex flex-column">
+        <img src="{{url_for('static', filename='img/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top">
+        <div class="card-body d-flex flex-column flex-grow-1">
+          <h5 class="text-center">{{product.name}}</h5>
+          {% set unit_price = product.price | float %}
+          {% set discounted_price = unit_price * (1 - product.discount / 100) %}
+          {% set save_price = unit_price - discounted_price %}
+          {% if product.discount > 0 %}
+          <p class="text-center">Original Price: <del>${{ unit_price | round(2) }}</del></p>
+          <p class="text-center">Discounted Price: ${{ discounted_price | round(2) }}</p>
+          <p class="text-center">Save: ${{ save_price | round(2) }}</p>
+          {% else %}
+          <p class="text-center">Price: ${{ unit_price | round(2) }}</p>
+          {% endif %}
+          <div class="mt-auto d-flex justify-content-between">
+            <a href="{{url_for('detail_page', id=product.id)}}" class="btn btn-sm btn-primary">Details</a>
+            {% if product.stock > 0 %}
+                <form action="{{url_for('AddCart')}}" method="post" class="d-flex align-items-center">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" name="quantity" value="1" min="1" max="{{ product.stock }}">
+                    {% set colors = product.colors.split(',') %}
+                    <select name="colors" id="colors" style="visibility: hidden;">
+                        {% for color in colors %}
+                            {% set col = color.split(':') %}
+                            <option value="{{ col[0] }}">{{ col[0]|capitalize }}</option>
+                        {% endfor %}
+                    </select>       
+                    <button type="submit" class="btn btn-sm btn-warning ml-2">Add to Cart</button>
+                </form>
+            {% else %}
+                <button class="btn btn-sm btn-danger" disabled>Out of Stock</button>
+            {% endif %}
+        </div>    
+        </div>
+      </div>
+    </div>
+    {% if loop.index % 3 == 0 and not loop.last %}
+  </div>
+  <div class="row">
+    {% else %}
+      {% if loop.last %}
+        </div> <!-- close row if it's the last product -->
+      {% endif %}
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col text-center">
+    {% if pagination.has_prev %}
+      <a href="{{ url_for('result', query=request.args.get('query'), page=pagination.prev_num) }}" class="btn btn-outline-info btn-sm mt-3">Previous</a>
+    {% endif %}
+    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if pagination.page == page_num %}
+          <a href="{{ url_for('result', query=request.args.get('query'), page=page_num) }}" class="btn btn-info btn-sm mt-3">{{ page_num }}</a>
+        {% else %}
+          <a href="{{ url_for('result', query=request.args.get('query'), page=page_num) }}" class="btn btn-outline-info btn-sm mt-3">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        <span class="ellipsis">...</span>
+      {% endif %}
+    {% endfor %}
+    {% if pagination.has_next %}
+      <a href="{{ url_for('result', query=request.args.get('query'), page=pagination.next_num) }}" class="btn btn-outline-info btn-sm mt-3">Next</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

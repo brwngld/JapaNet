@@ -8,6 +8,14 @@ body {
 }
 
 
+.wrapper {
+  border-top: 03px solid green;
+}
+
+.wrapper a{
+  text-decoration: none;
+  color: green;
+}
 
 /* Define styles for large screens */
 @media (min-width: 1200px) {

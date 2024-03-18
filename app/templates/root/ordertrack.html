@@ -1,0 +1,36 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+
+{% include 'root/navbar.html' %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Invoice</th>
+            <th scope="col">Status</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ order.invoice }}</td>
+            <td>{{ order.status }}</td>
+            <td>
+              <a href="{{ url_for('order_details', invoice=order.invoice) }}">View Details</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

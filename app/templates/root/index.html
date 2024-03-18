@@ -5,6 +5,8 @@
 {% include 'root/navbar.html' %}
 
 <div class="container mt-4">
+  <h2>Welcome to our store! {{current_user.username}} </h2>
+  <p>Check out our latest products below:</p>
   <div class="row">
     {% for product in products.items %}
     <div class="col-md-4 mb-4">

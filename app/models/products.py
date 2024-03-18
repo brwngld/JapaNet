@@ -2,6 +2,7 @@ from app import db
 from datetime import datetime
 
 class Addproduct(db.Model):
+    __searchable__ = ['name', 'description', 'price']
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Numeric(10,2), nullable=False)
@@ -21,15 +22,21 @@ class Addproduct(db.Model):
     image_2 = db.Column(db.String(255), nullable=False, default='image.jpg')
     image_3 = db.Column(db.String(255), nullable=False, default='image.jpg')
 
+    admin_email = db.Column(db.String(120), db.ForeignKey('admin.email'), nullable=False)
+    admin = db.relationship('Admin', backref=db.backref('added_products', lazy=True))
+   
     def __repr__(self):
         return f'<Addproduct {self.name}>'
 
 
 
+
 class Brand(db.Model):
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40), nullable=False, unique=True)
 
 class Category(db.Model):
+    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(40), nullable=False, unique=True)

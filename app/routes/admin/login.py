@@ -7,26 +7,23 @@ from flask_login import login_user
 from flask_login import login_required, current_user
 
 
+
 @app.route('/admin/home', methods=['GET', 'POST'])
-@login_required
 def admin_home():
       
-    #if request.method == 'POST':
-        # Handle form submission (if any)
-        # For example, you can process a search form here or any other action
-        
-        # After processing the form submission, you may redirect to another page
-        #return redirect(url_for('admin_home'))
-    
-    products = Addproduct.query.all()
+    if 'email' not in session:
+        flash('You need to log in first.', 'danger')
+        return redirect(url_for('admin_login'))
+
+    admin_email = session['email']  # Get the logged-in user's email from the session
+
+    products = Addproduct.query.filter_by(admin_email=admin_email).all()
 
     # Get the logout URL
     logout_url = url_for('admin_logout')
 
     # If it's a GET request, render the admin dashboard template
     return render_template('admin/index.html', title="Admin Dashboard", products=products, logout_url=logout_url)
-
-
 
 
 
@@ -39,19 +36,18 @@ def admin_register():
         last_name = form.last_name.data
         company_name = form.company_name.data
         nature_of_business = form.nature_of_business.data
-        username = form.username.data
         email = form.email.data
         password = form.password.data
 
         # Check if the email or username already exists
         existing_admin_email = Admin.query.filter_by(email=email).first()
-        existing_admin_username = Admin.query.filter_by(username=username).first()
+        
 
         if existing_admin_email:
             flash('Email already exists. Please use a different email.', 'danger')
             return redirect(url_for('admin_register'))
-        elif existing_admin_username:
-            flash('Username already exists. Please choose a different username.', 'danger')
+        elif Admin.query.filter_by(company_name=company_name).first():
+            flash('Company name already exists. Please choose a different company name.', 'danger')
             return redirect(url_for('admin_register'))
         else:
             # Create a new Admin object
@@ -60,7 +56,6 @@ def admin_register():
                 last_name=last_name,
                 company_name=company_name,
                 nature_of_business=nature_of_business,
-                username=username,
                 email=email
             )
             new_admin.set_password(password)
@@ -87,8 +82,6 @@ def admin_login():
         admin = Admin.query.filter((Admin.email == email)).first()
 
         if admin and admin.check_password(password):
-            # Login the user
-            login_user(admin)
             session['email'] = email  # Add the email to the session
             flash(f'Welcome {form.email.data}. You are logged in now', 'success')
             
@@ -97,6 +90,7 @@ def admin_login():
             flash('Invalid email or password. Please try again.', 'danger')
 
     return render_template('admin/login.html', form=form, title="Admin Login")
+
 
 
 

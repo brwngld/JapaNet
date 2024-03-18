@@ -1,23 +1,32 @@
 from app import app, db, photos
-from flask import redirect, render_template, url_for, flash, request,current_app
+from flask import redirect, render_template, url_for, flash, request,current_app, session
 from app.models.products import Brand, Category, Addproduct
 from app.forms.admin import AddproductForm
 from werkzeug.utils import secure_filename  # Import secure_filename for secure file storage
 import secrets
 import os
-from flask_login import login_required, current_user
+from flask_login import current_user,login_required
+
 
 #Brand Routes
 #-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addbrand', methods=['GET', 'POST'])
-@login_required
 def add_brand():
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
     if request.method == 'POST':
         getbrand = request.form.get('name')
-        brand = Brand(name=getbrand)
-        db.session.add(brand)
-        flash(f'The Brand {getbrand} was added to your database', 'success')
-        db.session.commit()
+        # Check if the brand already exists in the database
+        existing_brand = Brand.query.filter_by(name=getbrand).first()
+        if existing_brand:
+            flash(f'The Brand {getbrand} already exists in the database', 'warning')
+        else:
+            brand = Brand(name=getbrand)
+            db.session.add(brand)
+            flash(f'The Brand {getbrand} was added to your database', 'success')
+            db.session.commit()
+       
         return redirect (url_for('add_brand'))
     
     return render_template('admin/addbrand.html')
@@ -26,8 +35,11 @@ def add_brand():
 #----------------------------------------------------------------------------------------------------------------
 
 @app.route('/admin/brands', methods=['GET', 'POST'])
-@login_required
 def brands():
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     brands = Brand.query.order_by(Brand.id.desc()).all()
     
     return render_template('admin/brand.html', title="Brands Page", brands=brands)
@@ -35,11 +47,14 @@ def brands():
 #-----------------------------------------------------------------------------------------------------------------
 
 @app.route('/admin/updatebrand/<int:id>', methods=['GET', 'POST'])
-@login_required
 def updatebrand(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     updatebrand = Brand.query.get_or_404(id)
     if request.method == 'POST':
-        brand = request.form.get('name')  # Corrected attribute name to 'name'
+        brand = request.form.get('name')
         updatebrand.name = brand
         flash('Your brand was updated successfully', 'success')
         db.session.commit()
@@ -51,6 +66,10 @@ def updatebrand(id):
 
 @app.route('/deletebrand/<int:id>', methods=['POST'])
 def deletebrand(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     brand = Brand.query.get_or_404(id)
     if request.method == 'POST':
         db.session.delete(brand)
@@ -68,14 +87,23 @@ def deletebrand(id):
 #Category Routes
 #-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addcategory', methods=['GET', 'POST'])
-@login_required
 def add_category():
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     if request.method == 'POST':
         getcategory = request.form.get('name')
-        category = Category(name=getcategory)
-        db.session.add(category)
-        flash(f'The Category {getcategory} was added to your database', 'success')
-        db.session.commit()
+        # Check if the category already exists in the database
+        existing_category = Category.query.filter_by(name=getcategory).first()
+        if existing_category:
+            flash(f'The Category {getcategory} already exists in the database', 'warning')
+        else:
+            category = Category(name=getcategory)
+            db.session.add(category)
+            flash(f'The Category {getcategory} was added to your database', 'success')
+            db.session.commit()
+        
         return redirect (url_for('add_category'))
     
     return render_template('admin/addcategory.html')
@@ -83,8 +111,11 @@ def add_category():
 #----------------------------------------------------------------------------------------------------------------
 
 @app.route('/admin/categories', methods=['GET', 'POST'])
-@login_required
 def categories():
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     categories = Category.query.order_by(Category.id.desc()).all()
     
     
@@ -93,8 +124,11 @@ def categories():
 #----------------------------------------------------------------------------------------------------------------
 
 @app.route('/admin/updatecat/<int:id>', methods=['GET', 'POST'])
-@login_required
 def updatecat(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     updatecat = Category.query.get_or_404(id)
     category = request.form.get('category')
     if request.method == 'POST':
@@ -109,6 +143,10 @@ def updatecat(id):
 
 @app.route('/deletecat/<int:id>', methods=['POST'])
 def deletecat(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     category = Category.query.get_or_404(id)
     if request.method == 'POST':
         db.session.delete(category)
@@ -125,13 +163,20 @@ def deletecat(id):
 #Proucts Routes
 #-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addproduct', methods=['GET', 'POST'])
-@login_required
 def add_product():
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     brands = Brand.query.all()
     categories = Category.query.all()
     form = AddproductForm(request.form)
     
     if request.method == 'POST':
+        # Retrieve user email from session
+        admin_email = session['email']
+        
+        # Retrieve form data
         name = form.name.data
         price = form.price.data
         discount = form.discount.data
@@ -144,10 +189,13 @@ def add_product():
         image_2 = photos.save(request.files.get('image_2'), name=secrets.token_hex(10) + ".")
         image_3 = photos.save(request.files.get('image_3'), name=secrets.token_hex(10) + ".")
         
-        # Create Addproduct object and add to database
-        addpro = Addproduct(name=name, price=price, discount=discount, stock=stock, description=description, 
-                            colors=colors, brand_id=brand, category_id=category, 
-                            image_1=image_1, image_2=image_2, image_3=image_3)
+        # Create Addproduct object and associate with user
+        addpro = Addproduct(
+            name=name, price=price, discount=discount, stock=stock, description=description, 
+            colors=colors, brand_id=brand, category_id=category, 
+            image_1=image_1, image_2=image_2, image_3=image_3,
+            admin_email=admin_email  # Associate product with user
+        )
         
         db.session.add(addpro)
         db.session.commit()
@@ -158,16 +206,25 @@ def add_product():
 
 #----------------------------------------------------------------------------------------------------------------
 
-from flask import request
 
 @app.route('/admin/updateproduct/<int:id>', methods=['GET', 'POST'])
-@login_required
 def updateproduct(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     brands = Brand.query.all()
     categories = Category.query.all()
     product = Addproduct.query.get_or_404(id)
+
+    if product.admin_email != session['email']:
+        flash('You are not authorized to update this product.', 'danger')
+        return redirect(url_for('admin_home'))
+    
+
     brand = request.form.get('brand')
     category = request.form.get('category')
+    
     form = AddproductForm(request.form)
     if request.method == 'POST':
         product.name = form.name.data
@@ -178,6 +235,7 @@ def updateproduct(id):
         product.category_id = category
         product.colors = form.colors.data
         product.description = form.description.data
+        
         
         # Check if new images are uploaded
         if request.files.get('image_1'):
@@ -217,7 +275,11 @@ def updateproduct(id):
 #----------------------------------------------------------------------------------------------------------------
 
 @app.route('/deleteproduct/<int:id>', methods=['POST'])
-def deleteproduct(id):   
+def deleteproduct(id):
+    if 'email' not in session:
+        flash('Please login first', 'danger')
+        return redirect(url_for('admin_login'))
+    
     product = Addproduct.query.get_or_404(id)
     if request.method == 'POST':
         if request.files.get('image_1'):

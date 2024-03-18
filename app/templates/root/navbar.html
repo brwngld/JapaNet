@@ -1,56 +1,61 @@
+{% include 'root/_messages.html' %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container">
-      <a class="navbar-brand" href="/">JapaNet</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="/">All Products</a>
-              </li>
-              <li class="nav-item dropdown">
+    <div class="container">
+        <a class="navbar-brand" href="/">JapaNet</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/">All Products</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Brands
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for brand in brands %}
+                        <a class="dropdown-item" href="{{ url_for('get_brand', id=brand.id) }}">{{ brand.name }}</a>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Brands
+                      Categories
                   </a>
                   <ul class="dropdown-menu">
-                      {% for brand in brands %}
-                      <a class="dropdown-item" href="{{ url_for('get_brand', id=brand.id) }}">{{ brand.name }}</a>                      {% endfor %}
+                      {% for category in categories %}
+                      <li><a class="dropdown-item" href="{{ url_for('get_cat', id=category.id) }}">{{ category.name }}</a></li>
+                      {% endfor %}
                   </ul>
               </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Categories
-                </a>
-                <ul class="dropdown-menu">
-                    {% for category in categories %}
-                    <li><a class="dropdown-item" href="{{ url_for('get_cat', id=category.id) }}">{{ category.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" aria-disabled="true" href="{{url_for('getCart')}}" tabindex="-1">
-                    <i class="fas fa-shopping-cart"></i> Cart ({{ session['Shoppingcart']|length }})
-                </a>
-            </li>
-                                   
-          </ul>
-          <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-light" type="submit">Search</button>
-          </form>
-          {% if is_authenticated %}
-          <div class="ms-2 d-flex align-items-center">
-              <form action="{{ url_for('admin_logout') }}" method="post">
-                  <button type="submit" class="btn btn-danger">Logout</button>
-              </form>
-          </div>
-          {% else %}
-          <div class="ms-2">
-              <a href="#" class="btn btn-outline-light">Login</a>
-          </div>
-          {% endif %}
-      </div>
-  </div>
-</nav>
-
+              <li class="nav-item">
+                  <a class="nav-link" aria-disabled="true" href="{{url_for('getCart')}}" tabindex="-1">
+                      <i class="fas fa-shopping-cart"></i> Cart ({{ session['Shoppingcart']|length }})
+                  </a>
+              </li>
+              <div class="ms-2 d-flex align-items-center">
+                <p></p>
+            </div>
+            </div>
+            </ul>
+            <form action="{{url_for('result')}}" class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query">
+                <button class="btn btn-outline-light" type="submit">Search</button>
+            </form>
+            {% if current_user.is_authenticated %}
+            <div class="ms-2 d-flex align-items-center">
+                <form action="{{ url_for('user_logout') }}" method="post">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="ms-2">
+                <a href="{{url_for('user_login')}}" class="btn btn-outline-light">Login</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+  </nav>
+  

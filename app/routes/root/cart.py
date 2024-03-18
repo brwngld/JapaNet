@@ -1,7 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request, current_app, session
 from app import app, db
 from app.models.products import Addproduct, Brand, Category
-from app.models.admin import Admin
+from app.models.user import User, Userorder
 from app.forms.admin.product import AddproductForm
 from app.routes.root.user import brands, categories
 
@@ -51,6 +51,7 @@ def AddCart():
         
     finally:
         return redirect(request.referrer)
+
     
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):

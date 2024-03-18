@@ -12,8 +12,9 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 # Execute DESCRIBE statement
-table_name = "Addproduct"
-cursor.execute(f"DESCRIBE {table_name}")
+table_name = "Userorder"
+cursor.execute(f"DESCRIBE `{table_name}`")  # Use backticks around table name
+
 
 # Fetch and print the results
 columns = cursor.fetchall()

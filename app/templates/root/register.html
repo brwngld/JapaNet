@@ -1,0 +1,88 @@
+{% extends 'root/base.html' %}
+
+{% block content %}
+<body class="bg-light">
+    <div class="container">
+        {% include 'root/_messages.html' %}
+        <div class="container">
+            <div class="row mt-5">
+        <div class="col-lg-4 bg-white m-auto rounded-top wrapper">
+            <h2 class="text-center pt-3">User Registration</h2>
+            <p class="text-center text-muted lead">Create your account</p>
+
+            <form action="{{ url_for('user_register') }}" method="POST" id="registration-form" enctype="multipart/form-data">
+                {{ form.csrf_token }}
+                <div class="input-group mb-3">
+                    <label for="first_name" class="input-group-text"><i class="fa fa-user"></i></label>
+                    <input id="first_name" name="first_name" type="text" class="form-control" placeholder="First Name" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="last_name" class="input-group-text"><i class="fa fa-user"></i></label>
+                    <input id="last_name" name="last_name" type="text" class="form-control" placeholder="Last Name" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="username" class="input-group-text"><i class="fa fa-user"></i></label>
+                    <input id="username" name="username" type="text" class="form-control" placeholder="Username" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="email" class="input-group-text"><i class="fa fa-envelope"></i></label>
+                    <input id="email" name="email" type="email" class="form-control" placeholder="Email Address" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="password" class="input-group-text"><i class="fa fa-lock"></i></label>
+                    <input id="password" name="password" type="password" class="form-control" placeholder="Password" required>
+                    <button id="toggle-password" class="btn btn-outline-secondary" type="button"><i class="fa fa-eye"></i></button>
+                </div>
+                <div class="input-group mb-2">
+                    <div id="password-strength" class="text-muted text-center"></div>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="confirm_password" class="input-group-text"><i class="fa fa-lock"></i></label>
+                    <input id="confirm_password" name="confirm_password" type="password" class="form-control" placeholder="Confirm Password" required>
+                    <button id="toggle-confirm-password" class="btn btn-outline-secondary" type="button"><i class="fa fa-eye"></i></button>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="country" class="input-group-text"><i class="fa fa-globe"></i></label>
+                    <input id="country" name="country" type="text" class="form-control" placeholder="Country" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="state" class="input-group-text"><i class="fa fa-map"></i></label>
+                    <input id="state" name="state" type="text" class="form-control" placeholder="State" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="city" class="input-group-text"><i class="fa fa-city"></i></label>
+                    <input id="city" name="city" type="text" class="form-control" placeholder="City" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="address" class="input-group-text"><i class="fa fa-map-marker"></i></label>
+                    <input id="address" name="address" type="text" class="form-control" placeholder="Address" required>
+                </div>
+                <div class="input-group mb-3">
+                    <label for="profile" class="input-group-text"><i class="fa fa-image"></i></label>
+                    {{ form.profile(class="form-control", accept="image/*") }}
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="" id="terms_conditions" required>
+                    <label class="form-check-label" for="terms_conditions">
+                        I agree to the <a href="#">Terms and Conditions</a>
+                    </label>
+                </div>
+                <!-- Error Messages -->
+                {% for error in form.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+                <div class="submit d-grid">
+                    <button id="submit" name="submit" type="submit" class="btn btn-success">Register</button>
+                    <p class="text-center mt-3">
+                        Already have an account? <a href="{{ url_for('user_login') }}">Login here</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+{% endblock content %}

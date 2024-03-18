@@ -52,7 +52,7 @@
           <h5 class="card-title">Cart Summary</h5>
           <p class="card-text">Total Items: {{ session['Shoppingcart']|length }}</p>
           <p class="card-text">Total Amount: <span id="total-amount">{{ total_amount }}</span></p> <!-- Add an ID to the total amount cell -->
-          <a href="#" class="btn btn-primary">Checkout</a>
+          <a href="{{url_for('get_order')}}" class="btn btn-primary">Checkout</a>
         </div>
       </div>
     </div>
