@@ -1,0 +1,57 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+{% include 'admin/navbar.html' %}
+  
+<div class="container">
+  <div class="row">
+    {% include 'admin/_messages.html' %}
+    <div class="col-md-12">
+      <h2>Order Details</h2>
+      <hr>
+      <h4>Invoice: {{ order.invoice }}</h4>
+      <hr>
+      <h4>Status: {{ order.status }}</h4>
+      <hr>
+      <h4>Customer Name: {{ customer.username }}</h4>
+      <hr>
+      <h4>Customer Email: {{ customer.email }}</h4>
+      <hr>
+
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Product</th>
+            <th>Image</th>
+            <th>Color</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, product in order.orders.items() %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ product.name }}</td>
+            <td><img src="{{ url_for('static', filename='img/' + product.image) }}" alt="{{ product.name }}" style="max-width: 50px; max-height: 50px;"></td>
+            <td>{{ product.color }}</td>
+            <td>${{ product.price | float }}</td>  {# Ensure price is treated as a numeric value here #}
+            <td>{{ product.quantity | int }}</td>  {# Ensure quantity is treated as an integer value here #}
+            <td>${{ (product.price | float * product.quantity | int) | round(2) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <h4>Total Amount Paid: {{ grandtotal }}</h4>  {# Assuming total_amount is passed from the backend #}
+    </div>
+    <div class="text-center">
+      <a href="#" class="btn btn-warning">Get PDF</a>
+      <a href="javascript:history.go(-1)" class="btn btn btn-primary">Back</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

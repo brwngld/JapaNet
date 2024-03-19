@@ -3,8 +3,7 @@ from app import app, db
 from app.forms.admin import RegistrationForm, LoginForm
 from app.models.products import Brand, Category, Addproduct
 from app.models import Admin
-from flask_login import login_user
-from flask_login import login_required, current_user
+
 
 
 

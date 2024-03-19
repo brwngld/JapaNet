@@ -54,11 +54,10 @@ class Userorder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     invoice = db.Column(db.String(20), unique=True, nullable=False)
     status = db.Column(db.String(20), default='Pending', nullable=False)
-    customer_id = db.Column(db.Integer, unique=False, nullable=False)  # Removed parentheses
+    customer_id = db.Column(db.Integer, unique=False, nullable=False)  
     date_created = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     orders = db.Column(JsonEncodedDict)
-    total_amount = db.Column(db.Float, nullable=False)  # Total amount of the order
-    quantities = db.Column(JsonEncodedDict)  # Quantities of each item in the order
+    
     
     def __repr__(self):
         return '<UserOrder %r>' % self.invoice

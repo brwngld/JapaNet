@@ -5,7 +5,8 @@ from app.models.user import User, Userorder
 from app.forms.admin.product import AddproductForm
 from app.routes.root.user import brands, categories
 
-
+#A function that is able to merge 2 dictionaries together
+#enabling
 def MergerDicts(dict1, dict2):
     if isinstance(dict1, list) and isinstance(dict2, list):
         return dict1 + dict2
@@ -13,6 +14,8 @@ def MergerDicts(dict1, dict2):
         return dict(list(dict1.items()) + list(dict2.items()))
     return False
 
+#Add to Cart Function
+#Adds products to the shopping cart session[Icon]
 @app.route('/addcart', methods=['POST'])
 def AddCart():
     try:
@@ -22,7 +25,8 @@ def AddCart():
        
         
         product = Addproduct.query.filter_by(id=product_id).first()
-               
+
+          #Dictionary containing all the information of the products     
         if product_id and quantity and colors and product:
             item_details = {
                 'name': product.name,
@@ -52,7 +56,7 @@ def AddCart():
     finally:
         return redirect(request.referrer)
 
-    
+#Deletes single items in the shopping cart 
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
@@ -69,26 +73,29 @@ def deleteitem(id):
         return redirect(url_for('getCart'))
 
 
-
+#Shows details of shopcart before checkout
 @app.route('/shopcarts')
 def getCart():
     if 'Shoppingcart' not in session:
-        
-        return redirect(request.referrer)   
-    
-    return render_template('root/shopcart.html', brands=brands(), categories=categories())
-
-
-
-@app.route('/emptycarts')
-def emptyCart():
-    try:
-        session.clear()
+        print("Shopping cart is empty or not initialized")
+        flash('Your shopping cart is empty', 'info')
         return redirect(url_for('home'))
-    except Exception as e:
-        print(e)
+    
+    subtotal = 0
+    grandtotal = 0
+    for key, product in session['Shoppingcart'].items():
+        # Calculate subtotal for each product and add it to the total subtotal
+        subtotal += round(float(product['price']) * int(product['quantity']), 2)
+
+    
+    # Calculate grand total
+    grandtotal = round(subtotal, 2)
+    
+    return render_template('root/shopcart.html', subtotal=subtotal, grandtotal=grandtotal, brands=brands(), categories=categories())
 
 
+
+#Empties all cart items in session
 @app.route('/emptycarts')
 def clearCart():
     try:
@@ -98,3 +105,23 @@ def clearCart():
     except Exception as e:
         flash('An error occurred while clearing the shopping cart', 'error')
         print(e)
+
+
+
+#Update Route for updating cart items
+@app.route('/updatecart/<int:code>', methods=['POST'])
+def updatecart(code):
+    if 'Shoppingcart' not in session and len(session['Shoppingcart']) <=0:
+        return redirect(url_for('home'))
+    if request.method =='POST':
+        quantity = request.form.get('quantity')
+        try:
+            session.modified = True
+            for key, item in session['Shoppingcart'].items():
+                if int(key) == code:
+                    item['quantity'] = quantity
+                    flash('Item has been updated succesfully')
+                    return redirect(url_for('getCart'))
+        except Exception as e:
+            print(e)
+            return redirect(url_for('getCart'))

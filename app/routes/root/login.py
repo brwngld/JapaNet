@@ -2,12 +2,13 @@ from flask import render_template, redirect, url_for, flash, request, session
 from app import app, db, login_manager
 from app.forms.user import UserRegistrationForm, UserLoginForm
 from app.models.user import User, Userorder
+from app.models.products import Addproduct
 from flask_login import login_required, current_user, logout_user, login_user
 import secrets
-from collections import defaultdict
+from app.routes.root.user import brands, categories
 
 
-
+#Route to handle customer registration
 @app.route('/user/register', methods=['GET', 'POST'])
 def user_register():
     form = UserRegistrationForm()
@@ -54,9 +55,9 @@ def user_register():
 
     return render_template('root/register.html', form=form, title="User Registration")
 
+#----------------------------------------------------------------------------------------------------------------------------
 
-
-
+#Route to handle customer login
 @app.route('/user/login', methods=['GET', 'POST'])
 def user_login():
     form = UserLoginForm()
@@ -66,7 +67,7 @@ def user_login():
 
         
         user = User.query.filter_by(email=email_or_username).first() or User.query.filter_by(username=email_or_username).first()
-        print(user)  # Add this line to check the value of user
+        
         
         if user and user.check_password(password):
             login_user(user)
@@ -78,15 +79,17 @@ def user_login():
 
     return render_template('root/login.html', form=form, title="User Login")
 
+#-------------------------------------------------------------------------------------------------------------------------------------
 
-
-
+#Route to handle customer logout
 @app.route('/user/logout', methods=['POST'])
 def user_logout():
     logout_user()
     return redirect(url_for('user_login'))
 
+#-------------------------------------------------------------------------------------------------------------------------------------
 
+# Route to handle customers order
 @app.route('/getorder')
 @login_required
 def get_order():
@@ -94,57 +97,59 @@ def get_order():
         customer_id = current_user.id
         invoice = secrets.token_hex(5)
         
-        # Calculate total amount and quantities of each item
-        total_amount = 0
-        quantities = defaultdict(int)
-        for key, product in session['Shoppingcart'].items():
-            total_amount += product['price'] * product['quantity']
-            quantities[key] += product['quantity']
-
         try:
             # Create Userorder instance with updated orders
-            order = Userorder(invoice=invoice, customer_id=customer_id,
-                              orders=session['Shoppingcart'], total_amount=total_amount, quantities=quantities)
+            order_items = session.get('Shoppingcart', {})
+            for product_id, item_details in order_items.items():
+                quantity_ordered = int(item_details.get('quantity', 0))
+                
+                # Update product stock in the database
+                product = Addproduct.query.get(product_id)
+                
+                if product:
+                    # Check if the requested quantity exceeds the available stock
+                    if quantity_ordered > product.stock:
+                        flash(f"Insufficient stock for {product.name}. Available stock: {product.stock}", "danger")
+                        return redirect(url_for('getCart'))  # Redirect back to the cart page
+            
+                    # Update product stock in the database
+                    product.stock -= quantity_ordered
+                    db.session.add(product)
+            
+            # Create the order after updating stock
+            order = Userorder(invoice=invoice, customer_id=customer_id, orders=order_items)
             db.session.add(order)
             db.session.commit()
-            session.pop('Shoppingcart')
+            
+            session.pop('Shoppingcart', None)
             flash("Your order has been sent", "success")
             return redirect(url_for('orders', invoice=invoice))
         
         except Exception as e:
             print(e)
+            db.session.rollback()  # Rollback changes if an error occurs
             flash('Something went wrong while submitting order', 'danger')
             return redirect(url_for('getCart'))
         
 
+
 @app.route('/orders/<invoice>')
 @login_required
 def orders(invoice):
-    if current_user.is_authenticated:
-        customer_id = current_user.id 
-        customer = User.query.filter_by(id=customer_id).first()
-        orders = Userorder.query.filter_by(customer_id=customer_id).all()
-    
+    customer = current_user
+    orders = Userorder.query.filter_by(invoice=invoice, customer_id=current_user.id).first()
+    if orders:
+        subtotal = sum(float(item['price']) * int(item['quantity']) for item in orders.orders.values())
+        grandtotal = round(subtotal, 2)
+        return render_template('root/ordertrack.html', invoice=invoice, customer=customer, orders=orders, subtotal=subtotal, grandtotal=grandtotal, brands=brands(), categories=categories())
     else:
-        return redirect(url_for('user_login'))
-    return render_template('root/ordertrack.html', invoice = invoice, customer = customer, orders=orders)
+        flash('No order found with the provided invoice number.', 'info')
+        return redirect(url_for('home'))
 
-@app.route('/order_details/<invoice>')
+
+@app.route('/order-history/')
 @login_required
-def order_details(invoice):
-    if current_user.is_authenticated:
-       total_amount = 0
-       total = 0
-       customer_id = current_user.id
-       customer = User.query.filter_by(id=customer_id).first()
-       orders = Userorder.query.filter_by(customer_id=customer_id).order_by(Userorder.id.desc()).first()
-       if isinstance(orders.orders, dict):  # Check if orders.orders is a dictionary
-        # Check if 'price' key exists in the dictionary
-        if 'price' in orders.orders and 'quantity' in orders.orders:
-            # Access the price and quantity of the product
-            total_amount += (orders.orders['price'] * orders.orders['quantity'])
-            total += (orders.orders['price'] * orders.orders['quantity'])
-    else:
-        return redirect(url_for('orders'))
-       
-    return render_template('root/order_details.html', invoice=invoice, customer=customer, total=total, total_amount=total_amount, orders=orders)
+def order_history():
+    # Query the database to get all orders for the current user
+    orders = Userorder.query.filter_by(customer_id=current_user.id).order_by(Userorder.id.desc()).all()
+    return render_template('root/order_history.html', orders=orders, brands=brands(), categories=categories())

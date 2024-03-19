@@ -2,10 +2,10 @@ from app import app, db, photos
 from flask import redirect, render_template, url_for, flash, request,current_app, session
 from app.models.products import Brand, Category, Addproduct
 from app.forms.admin import AddproductForm
-from werkzeug.utils import secure_filename  # Import secure_filename for secure file storage
+from werkzeug.utils import secure_filename
 import secrets
 import os
-from flask_login import current_user,login_required
+
 
 
 #Brand Routes

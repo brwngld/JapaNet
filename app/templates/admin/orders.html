@@ -1,0 +1,47 @@
+<!-- templates/admin/orders.html -->
+
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+{% include 'admin/navbar.html' %}
+
+
+<h1>Orders</h1>
+ {% include 'admin/_messages.html' %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Invoice Number</th>
+      <th>Status</th>
+      <th>Actions</th>
+      <th>Update</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.invoice }}</td>
+      <td>{{ order.status }}</td>
+      <td>
+        <a href="{{ url_for('admin_order_details', order_id=order.id) }}" class="btn btn-info">View Details</a>
+      </td>
+      <td>
+        <form action="{{ url_for('change_order_status', order_id=order.id) }}" method="post" class="d-flex" >
+            <select name="status" class="form-control me- 2">
+                <option value="Pending">Pending</option>
+                <option value="Shipping">Shipping</option>
+                <option value="Arrived">Arrived</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

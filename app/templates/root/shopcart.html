@@ -6,90 +6,70 @@
 
 <div class="container mt-5">
   <div class="row">
+    {% include 'root/_messages.html' %}
     <div class="col-md-8">
       <h2>Shopping Cart</h2>
+      <br>
       <table class="table">
         <thead>
           <tr>
             <th scope="col">#</th>
             <th scope="col">Product</th>
-            <th scope="col">Product</th>
+            <th scope="col">Image</th>
             <th scope="col">Price</th>
             <th scope="col">Quantity</th>
-            <th scope="col">Total</th>
             <th scope="col">Color</th>
-            <th scope="col">Actions</th>
+            <th scope="col">Subtotal</th>
+            <th scope="col">Update</th>
+            <th scope="col">Delete</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Loop through cart items -->
-          {% set total_amount = 0 %}
+      
           {% for key, product in session['Shoppingcart'].items() %}
           <tr>
             <th scope="row">{{ loop.index }}</th>
             <td>{{ product.name }}</td>
             <td><img src="{{url_for('static', filename='img/' + product.image)}}" alt="{{product.name}}" style="max-width: 50px; max-height: 50px;"></td>
             <td>${{ product.price }}</td>
+            <form action="{{url_for('updatecart', code=key)}}" method="post">
             <td>
-                <input type="number" name="quantity" value="{{ product.quantity }}" min="1" max="{{ product.stock }}" onchange="updateTotal(this)" style="width: 50px;">
+                <input type="number" name="quantity" value="{{ product.quantity }}" min="1" max="{{ product.stock }}" style="width: 50px;">
             </td>
-            <td class="total-cell" id="total">${{ product.price | float * product.quantity | int }}</td>
             <td>{{product.color}}</td>
+            <td>${{ (product.price | float * product.quantity | int) | round(2) }}</td>
+            <td>
+              <button type="submit" class="btn btn-sm btn-info">Update</button>
+            </td>
+          </form>
             <td>
               <a href="{{ url_for('deleteitem', id=key) }}">
                 <button class="btn btn-sm btn-warning">Remove</button>
               </a>
             </td>
           </tr>
-          {% set total_amount = total_amount + (product.price | float * product.quantity | int) %}
           {% endfor %}
+       
+          <tr>
+            <td></td>
+            <td><a href="{{ url_for('get_order')}}" class="btn btn-success">Checkout</a> </td>
+            <td></td>
+            <td></td>
+            <td> </td>
+            <td colspan="4"><strong>Grand Total:</strong> {{grandtotal}}</td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-md-4">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">Cart Summary</h5>
-          <p class="card-text">Total Items: {{ session['Shoppingcart']|length }}</p>
-          <p class="card-text">Total Amount: <span id="total-amount">{{ total_amount }}</span></p> <!-- Add an ID to the total amount cell -->
-          <a href="{{url_for('get_order')}}" class="btn btn-primary">Checkout</a>
-        </div>
-      </div>
-    </div>
-  </div>
    <!-- Place the "Clear Cart" button outside of the row -->
    <div class="row mt-3">
     <div class="clear-cart-container">
       <a href="{{url_for('clearCart')}}" class="btn btn-danger btn-sm float-right">Clear Cart</a>
-  </div>
+      <a href="javascript:history.go(-1)" class="btn btn-primary btn-sm">Back</a>
+   </div>
+   </div>
   </div>
 </div>
-
-<script>
-  window.onload = function() {
-      // Calculate the initial total amount for all items
-      var totalAmount = 0;
-      document.querySelectorAll('.total-cell').forEach(function(cell) {
-          totalAmount += parseFloat(cell.textContent.substring(1)); // Add the total of each item
-      });
-      document.getElementById('total-amount').textContent = '$' + totalAmount.toFixed(2); // Update the total amount cell
-  }
-  
-  function updateTotal(input) {
-      var quantity = input.value;
-      var price = parseFloat(input.parentNode.previousElementSibling.textContent.substring(1));
-      var total = quantity * price;
-      input.parentNode.nextElementSibling.textContent = '$' + total.toFixed(2);
-      
-      // Recalculate the total amount for all items
-      var totalAmount = 0;
-      document.querySelectorAll('.total-cell').forEach(function(cell) {
-          totalAmount += parseFloat(cell.textContent.substring(1)); // Add the total of each item
-      });
-      document.getElementById('total-amount').textContent = '$' + totalAmount.toFixed(2); // Update the total amount cell
-  }
-</script>
-
 
 
 {% endblock content %}
