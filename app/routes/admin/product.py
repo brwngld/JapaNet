@@ -9,7 +9,6 @@ import os
 
 
 #Brand Routes
-#-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addbrand', methods=['GET', 'POST'])
 def add_brand():
     if 'email' not in session:
@@ -32,8 +31,8 @@ def add_brand():
     return render_template('admin/addbrand.html')
 
 
-#----------------------------------------------------------------------------------------------------------------
 
+#Displays list of all brands
 @app.route('/admin/brands', methods=['GET', 'POST'])
 def brands():
     if 'email' not in session:
@@ -44,8 +43,7 @@ def brands():
     
     return render_template('admin/brand.html', title="Brands Page", brands=brands)
 
-#-----------------------------------------------------------------------------------------------------------------
-
+#Updates the brand names existing in the database
 @app.route('/admin/updatebrand/<int:id>', methods=['GET', 'POST'])
 def updatebrand(id):
     if 'email' not in session:
@@ -62,8 +60,7 @@ def updatebrand(id):
     return render_template('admin/updatebrand.html', title='Update Brand page', updatebrand=updatebrand)
 
 
-#-----------------------------------------------------------------------------------------------------------------
-
+#Deletes the brands from the datatase
 @app.route('/deletebrand/<int:id>', methods=['POST'])
 def deletebrand(id):
     if 'email' not in session:
@@ -80,12 +77,11 @@ def deletebrand(id):
     return redirect(url_for('brands'))
 
 
-#-----------------------------------------------------------------------------------------------------------------
+
 
 
 
 #Category Routes
-#-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addcategory', methods=['GET', 'POST'])
 def add_category():
     if 'email' not in session:
@@ -108,8 +104,8 @@ def add_category():
     
     return render_template('admin/addcategory.html')
 
-#----------------------------------------------------------------------------------------------------------------
 
+#Displays list of all categories in the database
 @app.route('/admin/categories', methods=['GET', 'POST'])
 def categories():
     if 'email' not in session:
@@ -121,8 +117,8 @@ def categories():
     
     return render_template('admin/category.html', title="Categories Page", categories=categories)
 
-#----------------------------------------------------------------------------------------------------------------
 
+#Updates the category names existing in the database
 @app.route('/admin/updatecat/<int:id>', methods=['GET', 'POST'])
 def updatecat(id):
     if 'email' not in session:
@@ -139,8 +135,8 @@ def updatecat(id):
         return redirect(url_for('categories'))
     return render_template('admin/updatecategory.html', title='Update Category page', updatecat=updatecat)
 
-#----------------------------------------------------------------------------------------------------------------
 
+#Deletes the cateogory name exiting in the database
 @app.route('/deletecat/<int:id>', methods=['POST'])
 def deletecat(id):
     if 'email' not in session:
@@ -156,12 +152,10 @@ def deletecat(id):
     flash(f"The brand {category.name} can't be deleted", 'warning')
     return redirect(url_for('categories'))
 
-#----------------------------------------------------------------------------------------------------------------
 
 
 
 #Proucts Routes
-#-----------------------------------------------------------------------------------------------------------------
 @app.route('/admin/addproduct', methods=['GET', 'POST'])
 def add_product():
     if 'email' not in session:

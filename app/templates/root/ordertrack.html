@@ -6,7 +6,6 @@
 
 <div class="container mt-5">
   <div class="row">
-    {% include 'root/_messages.html' %}
     <div class="col-md-8">
       <h2>Order Details</h2>
       <hr>
@@ -18,7 +17,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">#</th>
+            <th scope="col">Sr</th>
             <th scope="col">Product</th>
             <th scope="col">Image</th>
             <th scope="col">Price</th>
@@ -47,9 +46,15 @@
         </tbody>
       </table>
       <div class="text-center">
-        <a href="#" class="btn btn-warning">Get PDF</a>
-        <a href="javascript:history.go(-1)" class="btn btn btn-primary">Back</a>
-      </div>
+        <div style="display: inline-block; margin-right: 10px;">
+            <form action="{{ url_for('pdf_gen', invoice=orders.invoice) }}" method="post">
+                <button type="submit" class="btn btn-warning">Get PDF</button>
+            </form>
+        </div>
+        <div style="display: inline-block;">
+            <a href="javascript:history.go(-1)" class="btn btn-primary">Back</a>
+        </div>
+    </div>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ from app.models.admin import Admin
 from app.models.user import User
 from flask import render_template, redirect, url_for, flash
 
+
 @app.route('/users/list')
 def users():
     users = User.query.all()

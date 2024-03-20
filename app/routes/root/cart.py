@@ -5,8 +5,8 @@ from app.models.user import User, Userorder
 from app.forms.admin.product import AddproductForm
 from app.routes.root.user import brands, categories
 
+
 #A function that is able to merge 2 dictionaries together
-#enabling
 def MergerDicts(dict1, dict2):
     if isinstance(dict1, list) and isinstance(dict2, list):
         return dict1 + dict2
@@ -56,7 +56,8 @@ def AddCart():
     finally:
         return redirect(request.referrer)
 
-#Deletes single items in the shopping cart 
+
+"""Deletes single items in the shopping cart"""
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:

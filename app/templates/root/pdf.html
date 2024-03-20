@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .receipt-info {
+            margin-bottom: 40px;
+        }
+        .table {
+            background-color: #fff;
+        }
+        th, td {
+            vertical-align: middle !important;
+        }
+        .grand-total {
+            font-size: 20px;
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <h2>Receipt</h2>
+                <div class="receipt-info">
+                    <h5>Invoice: {{ orders.invoice }}</h5>
+                    <h5>Status: {{ orders.status }}</h5>
+                    <h5>Customer Name: {{ customer.username }}</h5>
+                    <h5>Customer Email: {{ customer.email }}</h5>
+                </div>
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Sr</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, product in orders.orders.items() %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ product.name }}</td>
+                            <td>${{ product.price }}</td>
+                            <td>{{ product.quantity }}</td>
+                            <td>{{ product.color }}</td>
+                            <td>${{ (product.price | float * product.quantity | int) | round(2) }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="5"></td>
+                            <td class="grand-total"><strong>Grand Total:</strong></td>
+                            <td class="grand-total">${{ grandtotal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

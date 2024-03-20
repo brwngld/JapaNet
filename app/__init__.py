@@ -63,14 +63,3 @@ from app.routes.admin import *
 from app.models.admin import *
 from app.routes.root import *
 from app.models.user import *
-
-
-# Example of using session
-@app.route('/set-session')
-def set_session():
-    session['key'] = 'value'
-    return 'Session set'
-
-@app.route('/get-session')
-def get_session():
-    return session.get('key', 'Session key not found')
