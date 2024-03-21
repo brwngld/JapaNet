@@ -42,6 +42,10 @@
                     <button id="toggle-confirm-password" class="btn btn-outline-secondary" type="button"><i class="fa fa-eye"></i></button>
                 </div>
                 <div class="input-group mb-3">
+                    <label for="number" class="input-group-text"><i class="fa fa-phone"></i></label>
+                    <input id="number" name="number" type="text" class="form-control" placeholder="Number" required>
+                </div>
+                <div class="input-group mb-3">
                     <label for="country" class="input-group-text"><i class="fa fa-globe"></i></label>
                     <input id="country" name="country" type="text" class="form-control" placeholder="Country" required>
                 </div>
@@ -64,7 +68,7 @@
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" value="" id="terms_conditions" required>
                     <label class="form-check-label" for="terms_conditions">
-                        I agree to the <a href="#">Terms and Conditions</a>
+                        I agree to the <a href="{{url_for('terms')}}">Terms and Conditions</a>
                     </label>
                 </div>
                 <!-- Error Messages -->

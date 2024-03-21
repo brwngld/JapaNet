@@ -8,6 +8,7 @@ class Admin(db.Model):
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     company_name = db.Column(db.String(180), unique=False, nullable=False)
+    company_number = db.Column(db.String(80), unique=False)
     nature_of_business = db.Column(db.String(120), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(180), unique=False, nullable=False)

@@ -41,9 +41,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app) #Databse
 bcrypt = Bcrypt(app) #Bcrypt for password hashing
 migrate = Migrate(app, db) #Migrate database to match current database
+
 #search tool configuration
 search = Search(db=db)
 search.init_app(app)
+
 #login Manager for Users
 login_manager = LoginManager(app)
 login_manager.init_app(app)

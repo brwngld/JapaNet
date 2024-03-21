@@ -4,6 +4,7 @@ from app.models.products import Addproduct, Brand, Category
 from app.models.user import User, Userorder
 from app.forms.admin.product import AddproductForm
 from app.routes.root.user import brands, categories
+from flask_login import current_user, login_required
 
 
 #A function that is able to merge 2 dictionaries together
@@ -76,12 +77,15 @@ def deleteitem(id):
 
 #Shows details of shopcart before checkout
 @app.route('/shopcarts')
+@login_required
 def getCart():
     if 'Shoppingcart' not in session:
-        print("Shopping cart is empty or not initialized")
         flash('Your shopping cart is empty', 'info')
         return redirect(url_for('home'))
     
+    # Inside your Flask route or function
+    customer_id = current_user.id  # Assuming current_user contains the logged-in user's details
+    user = User.query.get(customer_id)  # Retrieve user details from the database
     subtotal = 0
     grandtotal = 0
     for key, product in session['Shoppingcart'].items():
@@ -92,7 +96,7 @@ def getCart():
     # Calculate grand total
     grandtotal = round(subtotal, 2)
     
-    return render_template('root/shopcart.html', subtotal=subtotal, grandtotal=grandtotal, brands=brands(), categories=categories())
+    return render_template('root/shopcart.html', subtotal=subtotal, grandtotal=grandtotal, brands=brands(), categories=categories(), customer = user)
 
 
 

@@ -14,12 +14,13 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique = True, nullable = False)
     email = db.Column(db.String(120), unique = True, nullable = False)
     password_hash = db.Column(db.String(180), unique = False, nullable = False)
+    number = db.Column(db.String(80), unique = False)
     country = db.Column(db.String(80), unique = False, nullable = False)
     state = db.Column(db.String(80), unique = False, nullable = False)
     city = db.Column(db.String(80), unique = False, nullable = False)
     address = db.Column(db.String(80), unique = False, nullable = False)
     profile = db.Column(db.String(200), unique= False, default='profile.jpg')
-    date_creatd = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     
 
     def __repr__(self):

@@ -21,6 +21,7 @@ def user_register():
         username = form.username.data
         email = form.email.data
         password = form.password.data
+        number = form.number.data
         country = form.country.data
         state = form.state.data
         city = form.city.data
@@ -41,6 +42,7 @@ def user_register():
                 last_name=last_name,
                 username=username,
                 email=email,
+                number=number,
                 country=country,
                 state=state,
                 city=city,

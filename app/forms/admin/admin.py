@@ -6,6 +6,7 @@ class RegistrationForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
     company_name = StringField('Company Name', validators=[DataRequired(), Length(min=2, max=100)])
+    company_number = StringField('Company Number', validators=[DataRequired(), Length(min=2, max=100)])
     nature_of_business = StringField('Nature of Business', validators=[DataRequired(), Length(min=2, max=100)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])  # Minimum length of 6 characters

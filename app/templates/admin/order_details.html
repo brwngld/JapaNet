@@ -8,16 +8,15 @@
   <div class="row">
     {% include 'admin/_messages.html' %}
     <div class="col-md-12">
+      <br>
+      <br>
       <h2>Order Details</h2>
-      <hr>
-      <h4>Invoice: {{ order.invoice }}</h4>
-      <hr>
-      <h4>Status: {{ order.status }}</h4>
-      <hr>
-      <h4>Customer Name: {{ customer.username }}</h4>
-      <hr>
-      <h4>Customer Email: {{ customer.email }}</h4>
-      <hr>
+      <p>Invoice: {{ order.invoice }}</p>
+      <p>Status: {{ order.status }}</p>
+      <p>Customer Name: {{ customer.first_name }} {{ customer.last_name }}</p>
+      <p>Customer Email: {{ customer.email }}</p>
+      <p>Customer Contact Number: {{ customer.number }}</p>
+      <p>Customer Shipipng Address: {{ customer.address }}</p>
 
 
       <table class="table">

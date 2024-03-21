@@ -42,8 +42,10 @@
                 <div class="receipt-info">
                     <h5>Invoice: {{ orders.invoice }}</h5>
                     <h5>Status: {{ orders.status }}</h5>
-                    <h5>Customer Name: {{ customer.username }}</h5>
+                    <h5>Customer Name: {{ customer.first_name }} {{ customer.last_name }}</h5>
                     <h5>Customer Email: {{ customer.email }}</h5>
+                    <h5>Contact Number: {{ customer.number }}</h5>
+                    <h5>Shipping Address: {{ customer.address }}</h5>
                 </div>
                 <table class="table">
                     <thead class="thead-dark">

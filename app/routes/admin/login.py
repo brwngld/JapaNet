@@ -34,6 +34,7 @@ def admin_register():
         first_name = form.first_name.data
         last_name = form.last_name.data
         company_name = form.company_name.data
+        company_number = form.company_number.data
         nature_of_business = form.nature_of_business.data
         email = form.email.data
         password = form.password.data
@@ -54,6 +55,7 @@ def admin_register():
                 first_name=first_name,
                 last_name=last_name,
                 company_name=company_name,
+                company_number=company_number,
                 nature_of_business=nature_of_business,
                 email=email
             )
@@ -104,3 +106,7 @@ def admin_logout():
             # Redirect to the admin login page regardless of whether the user was logged in or not
             
     return redirect(url_for('admin_login'))
+
+@app.route('/terms', methods=['GET'])
+def terms():
+    return render_template('admin/TnC.html')

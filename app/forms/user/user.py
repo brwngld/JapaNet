@@ -11,6 +11,7 @@ class UserRegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    number = StringField('Number', validators=[DataRequired(), Length(min=4, max=50)])
     country = StringField('Country', validators=[DataRequired(), Length(min=4, max=25)])
     state = StringField('State', validators=[DataRequired(), Length(min=4, max=25)])
     city = StringField('City', validators=[DataRequired(), Length(min=4, max=25)])

@@ -11,8 +11,10 @@
       <hr>
       <h5>Invoice: {{ orders.invoice }}</h5>
       <h5>Status: {{ orders.status }}</h5>
-      <h5>Customer Name: {{ customer.username }}</h5>
+      <h5>Customer Name: {{ customer.first_name }} {{ customer.last_name }}</h5>
       <h5>Customer Email: {{ customer.email }}</h5>
+      <h5>Contact Number: {{ customer.number }}</h5>
+      <h5>Shipping Address: {{ customer.address }}</h5>
       <br>
       <table class="table">
         <thead>
@@ -48,7 +50,7 @@
       <div class="text-center">
         <div style="display: inline-block; margin-right: 10px;">
             <form action="{{ url_for('pdf_gen', invoice=orders.invoice) }}" method="post">
-                <button type="submit" class="btn btn-warning">Get PDF</button>
+                <button type="submit" class="btn btn-warning">Print Receipt</button>
             </form>
         </div>
         <div style="display: inline-block;">
